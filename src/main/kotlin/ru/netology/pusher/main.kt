@@ -14,11 +14,16 @@ fun main() {
         .build()
 
     FirebaseApp.initializeApp(options)
-	
-	// Токен должен быть тот, который мы скопируем в момент генерации, но его не надо выкладывать на github, а надо написать тут получение из базы или файла
-	val token = "скопированный токен"		
-	
-    val message = Message.builder()
+
+    // Токен должен быть тот, который мы скопируем в момент генерации, но его не надо выкладывать на github, а надо написать тут получение из базы или файла
+    val token =
+        "скопированный токен приложения получателя"
+
+    pushMessage(token, "LIKE")
+    pushMessage(token, "NEW_POST")
+    pushMessage(token, "QQ")
+
+    /*val message = Message.builder()
         .putData("action", "LIKE")
         .putData("content", """{
           "userId": 1,
@@ -29,5 +34,39 @@ fun main() {
         .setToken(token)
         .build()
 
+    FirebaseMessaging.getInstance().send(message)*/
+}
+
+private fun pushMessage(token: String, action: String) {
+    val users = listOf("Vasiliy", "Anna", "Nina", "Olga", "Alex", "Peter")
+    val userId = (1..users.size).random()
+
+    val content = when (action) {
+        "LIKE" -> """{
+          "userId": $userId,
+          "userName": ${users[userId - 1]},
+          "postId": 2,
+          "postAuthor": "Netology"
+        }""".trimIndent()
+
+        "NEW_POST" -> """{
+          "userId": $userId,
+          "userName": ${users[userId - 1]},
+          "postId": 101,
+          "content": "Погода сегодня отличная. Летают бабочки, поют птицы, солнце греет вовсю!"
+        }""".trimIndent()
+
+        else -> "{}"
+    }
+
+    println(action)
+
+    val message = Message.builder()
+        .putData("action", action)
+        .putData("content", content)
+        .setToken(token)
+        .build()
+
     FirebaseMessaging.getInstance().send(message)
+
 }
